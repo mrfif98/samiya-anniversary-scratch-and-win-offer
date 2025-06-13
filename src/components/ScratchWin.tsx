@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -27,7 +26,7 @@ const ScratchWin = () => {
     "Jug": "🫖",
     "Cash Voucher 100 rupees": "💰",
     "Bed sheet": "🛏️",
-    "Turkey": "🦃",
+    "Turkey": "🏖️", // Changed from turkey bird to towel emoji
     "Better luck next time": "🍀"
   };
 
