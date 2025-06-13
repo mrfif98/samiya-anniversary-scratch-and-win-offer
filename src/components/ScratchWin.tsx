@@ -16,7 +16,7 @@ const ScratchWin = () => {
   const [formData, setFormData] = useState<FormData>({ phone: '', invoice: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState<'success' | 'error' | 'warning'>('error');
+  const [messageType, setMessageType] = useState<'success' | 'error' | 'warning' | 'better-luck'>('error');
   const [showScratch, setShowScratch] = useState(false);
   const [gift, setGift] = useState('');
 
@@ -27,7 +27,7 @@ const ScratchWin = () => {
     "Jug": "🫖",
     "Cash Voucher 100 rupees": "💰",
     "Bed sheet": "🛏️",
-    "Turkey": "🏖️", // Changed from turkey bird to towel emoji
+    "Turkey": "🏖️",
     "Better luck next time": "🍀"
   };
 
@@ -99,6 +99,12 @@ const ScratchWin = () => {
         setMessage("❌ Server error. Please try again later.");
         setMessageType('error');
         setShowScratch(false);
+      } else if (gift === "Better luck next time") {
+        console.log('Better luck next time case');
+        setMessage("😔 Oh no — better luck next time! Scratch to see.");
+        setMessageType('better-luck');
+        setGift(gift);
+        setShowScratch(true);
       } else {
         console.log('Success! Gift received:', gift);
         setMessage("🎉 Success! Scratch the card below to reveal your gift!");
@@ -186,6 +192,7 @@ const ScratchWin = () => {
               <Alert className={`border-0 ${
                 messageType === 'success' ? 'bg-green-50 text-green-800' :
                 messageType === 'warning' ? 'bg-yellow-50 text-yellow-800' :
+                messageType === 'better-luck' ? 'bg-orange-50 text-orange-800' :
                 'bg-red-50 text-red-800'
               }`}>
                 <AlertDescription className="text-center font-medium">
