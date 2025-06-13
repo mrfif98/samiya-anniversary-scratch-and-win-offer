@@ -20,11 +20,11 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ gift, giftIcon }) => {
     if (!ctx) return;
 
     // Set up the scratch surface - this should completely cover the gift
-    ctx.fillStyle = '#F3E8FF';
+    ctx.fillStyle = '#C0C0C0';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     // Add scratch instruction text
-    ctx.fillStyle = '#FEE2E2';
+    ctx.fillStyle = '#bf0e7b';
     ctx.font = 'bold 16px Arial';
     ctx.textAlign = 'center';
     ctx.fillText('ഇവിടെ സ്ക്രാച്ച് ചെയ്യുക!', canvas.width / 2, canvas.height / 2);
