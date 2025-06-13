@@ -19,7 +19,7 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ gift, giftIcon }) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set up the scratch surface
+    // Set up the scratch surface - this should completely cover the gift
     ctx.fillStyle = '#C0C0C0';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
@@ -31,7 +31,10 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ gift, giftIcon }) => {
     
     // Set up scratch effect
     ctx.globalCompositeOperation = 'destination-out';
-  }, []);
+    
+    // Reset revealed state when component mounts/gift changes
+    setIsRevealed(false);
+  }, [gift]);
 
   const getMousePos = (canvas: HTMLCanvasElement, e: MouseEvent | TouchEvent) => {
     const rect = canvas.getBoundingClientRect();
@@ -45,7 +48,7 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ gift, giftIcon }) => {
 
   const scratch = (e: MouseEvent | TouchEvent) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || isRevealed) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -62,7 +65,7 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ gift, giftIcon }) => {
 
   const checkScratchPercentage = () => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || isRevealed) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -79,16 +82,18 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ gift, giftIcon }) => {
 
     const scratchedPercentage = (transparentPixels / (canvas.width * canvas.height)) * 100;
     
-    if (scratchedPercentage > 50 && !isRevealed) {
+    if (scratchedPercentage > 50) {
       setIsRevealed(true);
-      // Clear the entire canvas
+      // Clear the entire canvas to reveal the gift
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    setIsScratching(true);
-    scratch(e.nativeEvent);
+    if (!isRevealed) {
+      setIsScratching(true);
+      scratch(e.nativeEvent);
+    }
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -103,8 +108,10 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ gift, giftIcon }) => {
 
   const handleTouchStart = (e: React.TouchEvent) => {
     e.preventDefault();
-    setIsScratching(true);
-    scratch(e.nativeEvent);
+    if (!isRevealed) {
+      setIsScratching(true);
+      scratch(e.nativeEvent);
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -122,6 +129,7 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ gift, giftIcon }) => {
   return (
     <div className="text-center">
       <div className="relative inline-block">
+        {/* Gift content - always present but covered by canvas */}
         <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-lg shadow-lg">
           <div className="text-center p-4">
             <div className="text-4xl mb-2">{giftIcon}</div>
@@ -129,11 +137,12 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ gift, giftIcon }) => {
           </div>
         </div>
         
+        {/* Scratch surface */}
         <canvas
           ref={canvasRef}
           width={300}
           height={120}
-          className="block cursor-pointer rounded-lg shadow-lg"
+          className="block cursor-pointer rounded-lg shadow-lg relative z-10"
           style={{ touchAction: 'none' }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -145,6 +154,7 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ gift, giftIcon }) => {
         />
       </div>
       
+      {/* Congratulations message - only shown after scratching */}
       {isRevealed && (
         <Card className="mt-4 bg-gradient-to-br from-green-100 to-green-200 border-green-300">
           <CardContent className="p-4 text-center">
