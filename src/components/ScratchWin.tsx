@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -64,13 +65,16 @@ const ScratchWin = () => {
   };
 
   const submitForm = async () => {
+    console.log('Form submission started');
     if (!validateForm()) return;
 
     setIsLoading(true);
     setMessage('');
     setShowScratch(false);
+    setGift('');
 
     try {
+      console.log('Sending request to server...');
       const response = await fetch(scriptURL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -78,28 +82,39 @@ const ScratchWin = () => {
       });
 
       const gift = await response.text();
+      console.log('Server response:', gift);
 
       if (gift === "duplicate") {
+        console.log('Duplicate invoice detected');
         setMessage("⚠️ This invoice has already been used!");
         setMessageType('warning');
+        setShowScratch(false);
       } else if (gift === "invalid") {
+        console.log('Invalid submission detected');
         setMessage("❌ Invalid submission. Please check your details and try again.");
         setMessageType('error');
+        setShowScratch(false);
       } else if (gift === "error") {
+        console.log('Server error detected');
         setMessage("❌ Server error. Please try again later.");
         setMessageType('error');
+        setShowScratch(false);
       } else {
+        console.log('Success! Gift received:', gift);
         setMessage("🎉 Success! Scratch the card below to reveal your gift!");
         setMessageType('success');
         setGift(gift);
         setShowScratch(true);
+        console.log('Scratch card should now be visible. showScratch:', true, 'gift:', gift);
       }
     } catch (error) {
       console.error("Error:", error);
       setMessage("❌ Something went wrong. Please check your connection and try again.");
       setMessageType('error');
+      setShowScratch(false);
     } finally {
       setIsLoading(false);
+      console.log('Form submission completed');
     }
   };
 
@@ -108,6 +123,8 @@ const ScratchWin = () => {
       submitForm();
     }
   };
+
+  console.log('Component render - showScratch:', showScratch, 'gift:', gift, 'message:', message);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 p-4">
@@ -177,7 +194,7 @@ const ScratchWin = () => {
               </Alert>
             )}
 
-            {showScratch && (
+            {showScratch && gift && (
               <div className="mt-6">
                 <ScratchCard 
                   gift={gift} 
