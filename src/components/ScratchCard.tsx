@@ -158,7 +158,7 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ gift, giftIcon }) => {
       {isRevealed && (
         <Card className="mt-4 bg-gradient-to-br from-green-100 to-green-200 border-green-300">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl mb-2">🎉 Congratulations! 🎉</div>
+            <div className="text-2xl mb-2">🎉 Congratulations! </div>
             <div className="font-bold text-lg text-green-800">You won: {gift}</div>
           </CardContent>
         </Card>
