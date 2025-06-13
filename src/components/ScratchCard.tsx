@@ -24,10 +24,10 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ gift, giftIcon }) => {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     // Add scratch instruction text
-    ctx.fillStyle = '#6B21A8';
+    ctx.fillStyle = '#FEE2E2';
     ctx.font = 'bold 16px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('Scratch Here!', canvas.width / 2, canvas.height / 2);
+    ctx.fillText('ഇവിടെ സ്ക്രാച്ച് ചെയ്യുക!', canvas.width / 2, canvas.height / 2);
     
     // Set up scratch effect
     ctx.globalCompositeOperation = 'destination-out';
