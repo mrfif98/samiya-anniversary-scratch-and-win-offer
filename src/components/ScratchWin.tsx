@@ -21,13 +21,11 @@ const ScratchWin = () => {
   const [gift, setGift] = useState('');
 
   const giftImages = {
-    "Headset": "🎧",
-    "Tiffin box": "🍱",
-    "Snack box": "🍿",
-    "Jug": "🫖",
-    "Cash Voucher 100 rupees": "💰",
-    "Bed sheet": "🛏️",
-    "Turkey": "🏖️",
+    "Payasam mix": "🥣",
+"Glass or mug": "☕",
+"Snack box": "🍿",
+"Tiffin box": "🍱",
+"Jug": "🫖",
     "Better luck next time": "🍀"
   };
 
