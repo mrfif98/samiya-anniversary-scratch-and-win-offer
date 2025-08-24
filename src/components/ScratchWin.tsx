@@ -1,19 +1,18 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Gift, Phone, Receipt } from 'lucide-react';
+import { Loader2, Gift, Phone, User } from 'lucide-react';
 import ScratchCard from './ScratchCard';
 
 interface FormData {
   phone: string;
-  invoice: string;
+  name: string;
 }
 
 const ScratchWin = () => {
-  const [formData, setFormData] = useState<FormData>({ phone: '', invoice: '' });
+  const [formData, setFormData] = useState<FormData>({ phone: '', name: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'success' | 'error' | 'warning' | 'better-luck'>('error');
@@ -22,10 +21,10 @@ const ScratchWin = () => {
 
   const giftImages = {
     "Payasam mix": "🥣",
-"Glass or mug": "☕",
-"Snack box": "🍿",
-"Tiffin box": "🍱",
-"Jug": "🫖",
+    "Lunch box": "🥡",
+    "Snack box": "🍿",
+    "Tiffin box": "🍱",
+    "Jug": "🫖",
     "Better luck next time": "🍀"
   };
 
@@ -44,9 +43,9 @@ const ScratchWin = () => {
       setMessageType('error');
       return false;
     }
-    
-    if (!formData.invoice.trim()) {
-      setMessage('Please enter your invoice number');
+
+    if (!formData.name.trim()) {
+      setMessage('Please enter your name');
       setMessageType('error');
       return false;
     }
@@ -76,18 +75,13 @@ const ScratchWin = () => {
       const response = await fetch(scriptURL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `phone=${encodeURIComponent(formData.phone)}&invoice=${encodeURIComponent(formData.invoice)}`
+        body: `phone=${encodeURIComponent(formData.phone)}&name=${encodeURIComponent(formData.name)}`
       });
 
       const gift = await response.text();
       console.log('Server response:', gift);
 
-      if (gift === "duplicate") {
-        console.log('Duplicate invoice detected');
-        setMessage("⚠️ This invoice has already been used!");
-        setMessageType('warning');
-        setShowScratch(false);
-      } else if (gift === "invalid") {
+      if (gift === "invalid") {
         console.log('Invalid submission detected');
         setMessage("❌ Invalid submission. Please check your details and try again.");
         setMessageType('error');
@@ -109,7 +103,6 @@ const ScratchWin = () => {
         setMessageType('success');
         setGift(gift);
         setShowScratch(true);
-        console.log('Scratch card should now be visible. showScratch:', true, 'gift:', gift);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -127,8 +120,6 @@ const ScratchWin = () => {
       submitForm();
     }
   };
-
-  console.log('Component render - showScratch:', showScratch, 'gift:', gift, 'message:', message);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 p-4">
@@ -158,12 +149,12 @@ const ScratchWin = () => {
               </div>
               
               <div className="relative">
-                <Receipt className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
                   type="text"
-                  placeholder="Invoice number"
-                  value={formData.invoice}
-                  onChange={(e) => handleInputChange('invoice', e.target.value)}
+                  placeholder="Your name"
+                  value={formData.name}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
                   onKeyPress={handleKeyPress}
                   className="pl-10"
                   disabled={isLoading}
