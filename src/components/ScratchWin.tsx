@@ -14,6 +14,7 @@ interface FormData {
 const ScratchWin = () => {
   const [formData, setFormData] = useState<FormData>({ phone: '', name: '' });
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false); // ✅ new state
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'success' | 'error' | 'warning' | 'better-luck'>('error');
   const [showScratch, setShowScratch] = useState(false);
@@ -50,7 +51,6 @@ const ScratchWin = () => {
       return false;
     }
 
-    // Basic phone number validation (adjust regex as needed)
     const phoneRegex = /^[0-9]{10,15}$/;
     if (!phoneRegex.test(formData.phone.replace(/\s+/g, ''))) {
       setMessage('Please enter a valid phone number');
@@ -104,11 +104,15 @@ const ScratchWin = () => {
         setGift(gift);
         setShowScratch(true);
       }
+
+      setIsSubmitted(true); // ✅ permanently disable after one click
+
     } catch (error) {
       console.error("Error:", error);
       setMessage("❌ Something went wrong. Please check your connection and try again.");
       setMessageType('error');
       setShowScratch(false);
+      setIsSubmitted(true); // ✅ keep disabled even if error
     } finally {
       setIsLoading(false);
       console.log('Form submission completed');
@@ -116,7 +120,7 @@ const ScratchWin = () => {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !isLoading) {
+    if (e.key === 'Enter' && !isLoading && !isSubmitted) {
       submitForm();
     }
   };
@@ -144,7 +148,7 @@ const ScratchWin = () => {
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   onKeyPress={handleKeyPress}
                   className="pl-10"
-                  disabled={isLoading}
+                  disabled={isLoading || isSubmitted} // ✅ disable after submit
                 />
               </div>
               
@@ -157,14 +161,14 @@ const ScratchWin = () => {
                   onChange={(e) => handleInputChange('name', e.target.value)}
                   onKeyPress={handleKeyPress}
                   className="pl-10"
-                  disabled={isLoading}
+                  disabled={isLoading || isSubmitted} // ✅ disable after submit
                 />
               </div>
             </div>
 
             <Button 
               onClick={submitForm} 
-              disabled={isLoading}
+              disabled={isLoading || isSubmitted} // ✅ disable button after submit
               className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
             >
               {isLoading ? (
@@ -172,6 +176,8 @@ const ScratchWin = () => {
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Submitting...
                 </>
+              ) : isSubmitted ? (
+                "Submitted ✅"
               ) : (
                 'Submit'
               )}
